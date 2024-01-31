@@ -46,7 +46,7 @@ export default function Episodes(): React.ReactElement {
                                 </h4>
                                 {season.episodes.map((episode, i: number) => (
                                   <Link
-                                    to={`/watch?url=${episode.url}&origin=${params.get("url")}&ep=${i + 1}`}
+                                    to={`/watch?url=${encodeURIComponent(episode.url)}&origin=${encodeURIComponent(params.get("url")!)}&ep=${i + 1}`}
                                     key={i}
                                     className="text-sm [&:not(:last-child)]:border-b p-2 flex flex-col"
                                   >

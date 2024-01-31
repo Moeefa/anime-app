@@ -1,15 +1,25 @@
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Fullscreen,
   MoveLeft,
   Pause,
   PictureInPicture2,
   Play,
+  Settings,
   StepForward,
   Volume1,
   Volume2,
   VolumeX,
 } from "lucide-react"
-import { MutableRefObject, RefObject, useRef, useState } from "react"
+import { MutableRefObject, RefObject, useEffect, useRef, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 
@@ -19,6 +29,10 @@ import React from "react"
 import ReactPlayer from "react-player"
 import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
+
+const Qualities = ({ playerRef }) => {
+  return <></>
+}
 
 let timeout: string | number | NodeJS.Timeout | undefined
 export default function Player({
@@ -38,6 +52,25 @@ export default function Player({
   const [showVolume, setShowVolume] = useState(false)
   const [playedSeconds, setPlayedSeconds] = useState([0])
   const [volume, setVolume] = useState(100)
+  const [highestQuality, setHighestQuality] = useState("")
+  const [quality, setQuality] = useState("")
+
+  const transform = {
+    "1080p": "fhd",
+    "720p": "hd",
+    "480p": "sd",
+  }
+
+  const handleQuality = (quality: string) => {
+    if (/(1080p|720p|480p)/g.test(playerRef.current.getInternalPlayer().src))
+      quality = Object.fromEntries(Object.entries(transform).map((a) => a.reverse()))[quality]
+
+    const currentTime = playerRef.current.getCurrentTime()
+    playerRef.current.getInternalPlayer().src = playerRef.current
+      .getInternalPlayer()
+      .src.replace(/(fhd|hd|sd|1080p|720p|480p)/g, quality)
+    playerRef.current.seekTo(currentTime)
+  }
 
   const formatTime = (durationSeconds: number) => {
     const hrs = Math.floor(durationSeconds / 3600)
@@ -116,6 +149,12 @@ export default function Player({
             playing={playing}
             onEnded={() => setPlaying(false)}
             onProgress={(state) => setPlayedSeconds([state.playedSeconds])}
+            onReady={() =>
+              highestQuality === "" &&
+              setHighestQuality(
+                playerRef.current?.getInternalPlayer().src.match(/(fhd|hd|sd|1080p|720p|480p)/g)[0],
+              )
+            }
             pip={showPip}
             url={src}
           />
@@ -251,6 +290,36 @@ export default function Player({
               >
                 <PictureInPicture2 className="w-4 h-4" />
               </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" className="rounded-full" size="icon" tabIndex={-1}>
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Quality</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup
+                    value={quality || transform[highestQuality] || highestQuality}
+                    onValueChange={(value) => {
+                      setQuality(value)
+                      handleQuality(value)
+                    }}
+                  >
+                    {[...Array(3)].map((_, i) => {
+                      if (["sd", "480p"].includes(highestQuality) && i <= 1) return
+                      if (["hd", "720p"].includes(highestQuality) && i === 0) return
+
+                      return (
+                        <DropdownMenuRadioItem key={i} value={["fhd", "hd", "sd"][i]}>
+                          {["Full HD", "HD", "SD"][i]}
+                        </DropdownMenuRadioItem>
+                      )
+                    })}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <Button
                 variant="secondary"

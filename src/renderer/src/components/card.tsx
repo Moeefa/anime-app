@@ -24,7 +24,7 @@ export default function Card({
   video?: boolean
 }): JSX.Element {
   return (
-    <Link to={video ? getVideoURL(url) : `/episodes?url=${url}`}>
+    <Link to={video ? getVideoURL(url) : `/episodes?url=${encodeURIComponent(url)}`}>
       <div
         data-video={video}
         className={cn("relative hover:scale-110 transition-all group", className)}
