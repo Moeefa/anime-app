@@ -25,7 +25,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   build-linux:
-    runs-on: linux-latest
+    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: 📦️ Checkout
@@ -44,6 +44,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   publish:
+    needs: [build-win, build-linux]
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
