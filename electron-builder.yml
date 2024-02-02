@@ -13,6 +13,10 @@ asarUnpack:
   - resources/**
 win:
   executableName: electron-app
+  publish:
+    provider: github
+    protocol: https
+    token: ${{ secrets.GH_TOKEN }}
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -38,5 +42,3 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-publish:
-  token: ${{ secrets.GH_TOKEN }}
