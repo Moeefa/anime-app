@@ -71,7 +71,7 @@ jobs:
       - name: Generate Changelog
         run: echo "# 📄 Changelog" > CHANGELOG.txt
       - name: See directory
-        run: ls dist
+        run: ls
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
