@@ -26,7 +26,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-win
           path: |
             dist
             !dist/**/*.md
@@ -54,12 +54,12 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-linux
           path: |
             dist
             !dist/**/*.md
       - name: See directory
-        run: ls
+        run: ls dist
 
   publish:
     needs: [build-win, build-linux]
@@ -71,12 +71,12 @@ jobs:
       - name: Generate Changelog
         run: echo "# 📄 Changelog" > CHANGELOG.txt
       - name: See directory
-        run: ls
+        run: ls dist
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           body_path: CHANGELOG.txt
           name: Release ${{  github.ref_name }}
           files: |
-            dist/anime-app-setup.exe
-            dist/anime-app.AppImage
+            dist-win/anime-app.exe
+            dist-linux/anime-app.AppImage
