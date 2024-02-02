@@ -5,13 +5,13 @@ on:
         - "v*.*.*"
 
 jobs:
-  build:
+  build:win:
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: 📦️ Checkout
         uses: actions/checkout@v3
-      - name: 🧃 Node.js
+      - name: 📦️ Node.js
         uses: actions/setup-node@master
         with:
           node-version: 20
@@ -20,15 +20,39 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: 🧱 Build
-        run: npm run build:win
+        run: npm run build:win -p never
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  build:linux:
+    runs-on: linux-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: 📦️ Checkout
+        uses: actions/checkout@v3
+      - name: 📦️ Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 20
+      - name: ⬆️ Update npm
+        run: npm install --global npm@latest
+      - name: Install dependencies
+        run: npm install
+      - name: 🧱 Build
+        run: npm run build:linux -p never
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
       - name: 📄 Generate Changelog
-        run: echo "# 📄 Changelog" > ${{ github.workspace }}-CHANGELOG.txt
+        run: echo "# 📄 Changelog" > CHANGELOG.txt
       - name: 🚀 Release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: ${{ github.workspace }}-CHANGELOG.txt
+          body_path: CHANGELOG.txt
           name: Release ${{  github.ref_name }}
           files: |
             dist/anime-app-setup.exe
+            dist/anime-app.AppImage
