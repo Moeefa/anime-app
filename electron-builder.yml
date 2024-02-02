@@ -16,7 +16,6 @@ win:
   publish:
     provider: github
     protocol: https
-    token: ${{ secrets.GH_TOKEN }}
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

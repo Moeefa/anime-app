@@ -11,7 +11,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <SWRConfig
       value={{
         revalidateOnFocus: false,
-        fetcher: (url: string | URL | Request) => fetch(url).then((r) => r.json()),
+        fetcher: (url: string | URL | Request) =>
+          fetch(url, { mode: "cors" }).then((res) => res.json()),
       }}
     >
       <HashRouter>

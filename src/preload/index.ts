@@ -3,7 +3,7 @@ import { electronAPI } from "@electron-toolkit/preload"
 
 // Custom APIs for renderer
 const api = {
-  URL: "http://localhost:3333",
+  URL: "http://localhost:5137",
   SITE: "AnimeFire",
 }
 

@@ -75,8 +75,8 @@
 }
  
 @layer base {
-  html, body {
-    @apply scroll-smooth overflow-hidden bg-card dark:text-white;
+  body {
+    @apply scroll-smooth overflow-hidden bg-card text-foreground;
   }
 
   * {
