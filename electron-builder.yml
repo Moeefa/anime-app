@@ -1,7 +1,7 @@
-appId: com.electron.app
-productName: electron-app
+appId: com.moeefa.app
+productName: Anime App
 directories:
-  buildResources: build
+  buildResources: resources
 files:
   - '!**/.vscode/*'
   - '!src/*'
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: electron-app
+  executableName: Anime App
   publish:
     provider: github
     protocol: https
