@@ -1,35 +1,18 @@
-name: build-actions
+name: Release
 on: push
 
 jobs:
   build:
-    name: Deploy to Windows
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@master
         with:
           node-version: 20
       - name: Update npm
         run: npm install --global npm@latest
-      - name: Patch node gyp on windows to support Visual Studio 2019
-        shell: powershell
-        run: |
-          npm install --global node-gyp@latest
-          npm prefix -g | % {npm config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"}
-      - name: Install yarn
-        run: npm install --global yarn
       - name: Install dependencies
-        run: yarn install
+        run: npm install
       - name: Build
-        run: yarn make --platform win32
-      - name: Generate Changelog
-        run: echo "# Changelog" > ${{ github.workspace }}-CHANGELOG.txt
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: ${{ github.workspace }}-CHANGELOG.txt
-          release_name: Release ${{ github.ref }}
-          files: |
-            out/make/squirrel.windows/x64/anime-app.exe
+        run: npm run build:win
