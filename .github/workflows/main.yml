@@ -30,3 +30,4 @@ jobs:
           name: Release ${{  github.ref_name }}
           files: |
             dist/anime-app-${{  github.ref_name }}-setup.exe
+            dist/anime-app-${{  github.ref_name }}-setup.exe.blockmap
