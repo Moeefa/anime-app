@@ -3,7 +3,7 @@ import { electronAPI } from "@electron-toolkit/preload"
 
 // Custom APIs for renderer
 const api = {
-  URL: "http://localhost:5137",
+  URL: "https://anime-app-back.vercel.app",
   SITE: "AnimeFire",
 }
 
