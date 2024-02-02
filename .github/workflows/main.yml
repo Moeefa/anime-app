@@ -27,6 +27,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body_path: ${{ github.workspace }}-CHANGELOG.txt
-          name: Release ${{ github.ref }}
+          name: Release ${{  github.ref_name }}
           files: |
-            out/make/squirrel.windows/x64/anime-app.exe
+            dist/anime-app-${{  github.ref_name }}-setup.exe
