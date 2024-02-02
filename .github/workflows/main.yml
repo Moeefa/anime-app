@@ -29,5 +29,4 @@ jobs:
           body_path: ${{ github.workspace }}-CHANGELOG.txt
           name: Release ${{  github.ref_name }}
           files: |
-            dist/anime-app-${{  github.ref_name }}-setup.exe
-            dist/anime-app-${{  github.ref_name }}-setup.exe.blockmap
+            dist/anime-app-setup.exe
