@@ -38,7 +38,3 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-publish:
-  provider: github
-  protocol: https
-  url: https://example.com/auto-updates
