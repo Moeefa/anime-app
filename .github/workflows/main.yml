@@ -44,6 +44,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   publish:
+    runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: 📄 Generate Changelog
