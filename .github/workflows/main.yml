@@ -17,12 +17,14 @@ jobs:
           node-version: 20
       - name: ⬆️ Update npm
         run: npm install --global npm@latest
-      - name: Install dependencies
+      - name: ☄️ Install dependencies
         run: npm install
       - name: 🧱 Build
         run: npm run build:win
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: 👀 See directory
+        run: ls
 
   build-linux:
     runs-on: ubuntu-latest
@@ -36,12 +38,14 @@ jobs:
           node-version: 20
       - name: ⬆️ Update npm
         run: npm install --global npm@latest
-      - name: Install dependencies
+      - name: ☄️ Install dependencies
         run: npm install
       - name: 🧱 Build
         run: npm run build:linux
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: 👀 See directory
+        run: ls
 
   publish:
     needs: [build-win, build-linux]
@@ -50,6 +54,8 @@ jobs:
     steps:
       - name: 📄 Generate Changelog
         run: echo "# 📄 Changelog" > CHANGELOG.txt
+      - name: 👀 See directory
+        run: ls
       - name: 🚀 Release
         uses: softprops/action-gh-release@v1
         with:
