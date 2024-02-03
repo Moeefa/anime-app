@@ -14,8 +14,6 @@ export default function Home(): React.ReactElement {
   // eslint-disable-next-line prettier/prettier
   const { data: src }: { data: IGetWatchURL | undefined } = useSWR(`${window.api.URL}/watch/url?url=${params.get("url")}&site=${window.api.SITE}`)
 
-  console.log(data?.seasons[0].episodes[-1])
-
   return (
     <>
       <div className="h-screen w-screen flex justify-center items-center bg-black">
@@ -25,6 +23,7 @@ export default function Home(): React.ReactElement {
           data-episode={params.get("ep")!}
           data-next={`/watch?url=${params.get("url")!.replace(params.get("ep")!, String(Number(params.get("ep")!) + 1))}&origin=${params.get("origin")}&ep=${String(Number(params.get("ep")!) + 1)}`}
           data-title={!error && !isLoading ? data?.title || "" : ""}
+          data-disable-next={data?.seasons[0].episodes.at(-1)?.url === params.get("url")}
           src={src?.url || ""}
         />
       </div>

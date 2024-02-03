@@ -208,17 +208,21 @@ export default function Player({
                 {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </Button>
 
-              <Link tabIndex={-1} to={props["data-next"]}>
-                <Button
-                  variant="secondary"
-                  className="rounded-full"
-                  size="icon"
-                  onClick={() => setPlaying((state) => !state)}
-                  tabIndex={-1}
-                >
-                  <StepForward className="w-4 h-4" />
-                </Button>
-              </Link>
+              {!props["data-disable-next"] ? (
+                <Link tabIndex={-1} to={props["data-next"]}>
+                  <Button
+                    variant="secondary"
+                    className="rounded-full"
+                    size="icon"
+                    onClick={() => setPlaying((state) => !state)}
+                    tabIndex={-1}
+                  >
+                    <StepForward className="w-4 h-4" />
+                  </Button>
+                </Link>
+              ) : (
+                <></>
+              )}
 
               <small className="text-sm text-white font-medium leading-none">
                 {formatTime(playerRef.current?.getCurrentTime() || 0)}

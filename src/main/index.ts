@@ -13,7 +13,7 @@ function createWindow(): void {
     minHeight: 200,
     minWidth: 500,
     show: false,
-    frame: !["win32", "darwin"].includes(process.platform),
+    frame: ["win32", "darwin"].includes(process.platform),
     autoHideMenuBar: true,
     transparent: false,
     backgroundMaterial: "none",
