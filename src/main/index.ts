@@ -1,9 +1,14 @@
 import { BrowserWindow, app, ipcMain, nativeTheme, session, shell } from "electron"
 import { electronApp, is, optimizer } from "@electron-toolkit/utils"
 
+import Store from "electron-store"
 import { autoUpdater } from "electron-updater"
 import icon from "../../resources/icon.png?asset"
 import { join } from "path"
+
+const store = new Store({
+  accessPropertiesByDotNotation: true,
+})
 
 function createWindow(): void {
   // Create the browser window.
@@ -12,6 +17,7 @@ function createWindow(): void {
     height: 590,
     minHeight: 200,
     minWidth: 500,
+    title: "Rabbit Hole",
     show: false,
     frame: ["win32", "darwin"].includes(process.platform),
     autoHideMenuBar: true,
@@ -65,6 +71,22 @@ function createWindow(): void {
       color: nativeTheme.shouldUseDarkColors ? "#1e1e1e" : "#ffffff",
       symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#1e1e1e",
     })
+  })
+
+  ipcMain.on("setStorage", (_, key, value) => {
+    store.set(key, value)
+  })
+
+  ipcMain.on("getStorage", (event, key) => {
+    event.returnValue = store.get(key)
+  })
+
+  ipcMain.on("removeStorage", (_, key) => {
+    store.delete(key)
+  })
+
+  ipcMain.on("clearStorage", () => {
+    store.clear()
   })
 
   autoUpdater.on("update-available", () => {

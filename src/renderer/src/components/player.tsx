@@ -51,7 +51,7 @@ export default function Player({
   const [showControls, setShowControls] = useState(false)
   const [showVolume, setShowVolume] = useState(false)
   const [playedSeconds, setPlayedSeconds] = useState([0])
-  const [volume, setVolume] = useState(100)
+  const [volume, setVolume] = useState<number>(window.storage.get("settings.volume") || 100)
   const [highestQuality, setHighestQuality] = useState("")
   const [quality, setQuality] = useState("")
 
@@ -275,7 +275,10 @@ export default function Player({
                 >
                   <small className="text-sm font-medium leading-none mb-2">{volume}%</small>
                   <Slider
-                    onValueChange={(value) => setVolume(Number(value))}
+                    onValueChange={(value) => {
+                      window.storage.set("settings.volume", Number(value))
+                      setVolume(Number(value))
+                    }}
                     defaultValue={[volume]}
                     max={100}
                     min={0}
