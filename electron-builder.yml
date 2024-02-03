@@ -1,5 +1,5 @@
 appId: com.moeefa.app
-productName: Anime App
+productName: Rabbit Hole
 directories:
   buildResources: resources
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: Anime App
+  executableName: Rabbit Hole
   publish:
     provider: github
     protocol: https
