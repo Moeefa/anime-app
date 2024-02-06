@@ -80,7 +80,7 @@
   }
 
   * {
-    @apply border-border transition-colors;
+    @apply border-border transition-colors duration-75;
   }
 
   main {
