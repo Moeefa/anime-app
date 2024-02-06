@@ -29,6 +29,13 @@ const Icon = () => (
 
 export default function Header({ className }: React.HTMLAttributes<HTMLDivElement>): JSX.Element {
   const [online, setOnline] = React.useState(true)
+  const [shouldUseDarkColors, setShouldUseDarkColors] = React.useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+  )
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (e) => setShouldUseDarkColors(e.matches))
 
   window.addEventListener("online", () => setOnline((state) => !state))
 
@@ -39,20 +46,15 @@ export default function Header({ className }: React.HTMLAttributes<HTMLDivElemen
           <Icon />
           <Menubar className="ml-4 bg-tranparent border-none shadow-none titlebar-actions h-full">
             <MenubarMenu>
-              <MenubarTrigger className="py-0 px-3">File</MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>
-                  Open from file <MenubarShortcut>Ctrl+O</MenubarShortcut>
-                </MenubarItem>
-                <MenubarItem>Open from URL</MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-            <MenubarMenu>
               <MenubarTrigger className="py-0 px-3">Settings</MenubarTrigger>
               <MenubarContent>
                 <MenubarCheckboxItem
-                  checked
-                  onClick={() => window.electron.ipcRenderer.send("dark-mode:toggle")}
+                  checked={shouldUseDarkColors}
+                  onClick={async () =>
+                    setShouldUseDarkColors(
+                      await window.electron.ipcRenderer.invoke("dark-mode:toggle"),
+                    )
+                  }
                 >
                   Dark theme
                 </MenubarCheckboxItem>

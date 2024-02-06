@@ -10,6 +10,7 @@ import { useState } from "react"
 export default function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [search, setSearch] = useState("")
   const [updated, setUpdated] = useState(true)
+
   window.electron.ipcRenderer.on("update-available", () => {
     setUpdated(false)
   })
