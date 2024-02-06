@@ -30,10 +30,13 @@ import ReactPlayer from "react-player"
 import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 
-const Qualities = ({ playerRef }) => {
-  return <></>
+const transform = {
+  "1080p": "fhd",
+  "720p": "hd",
+  "480p": "sd",
 }
 
+const startTimestamp = new Date()
 let timeout: string | number | NodeJS.Timeout | undefined
 export default function Player({
   className = "",
@@ -55,11 +58,16 @@ export default function Player({
   const [highestQuality, setHighestQuality] = useState("")
   const [quality, setQuality] = useState("")
 
-  const transform = {
-    "1080p": "fhd",
-    "720p": "hd",
-    "480p": "sd",
-  }
+  window.electron.ipcRenderer.send("discord:rpc", {
+    startTimestamp,
+    details: props["data-title"],
+    state: `Watching episode ${props["data-episode"]}`,
+    largeImageKey: "icon",
+    largeImageText: "Rabbit Hole",
+    smallImageKey: "watching",
+    smallImageText: "Watching",
+    instance: false,
+  })
 
   const handleQuality = (quality: string) => {
     if (/(1080p|720p|480p)/g.test(playerRef.current.getInternalPlayer().src))
@@ -138,7 +146,7 @@ export default function Player({
       >
         <div
           className="h-full w-full overflow-hidden"
-          onClick={(e) => setPlaying((state) => !state)}
+          onClick={() => setPlaying((state) => !state)}
         >
           <ReactPlayer
             width="100%"
@@ -319,7 +327,11 @@ export default function Player({
                       if (["hd", "720p"].includes(highestQuality) && i === 0) return
 
                       return (
-                        <DropdownMenuRadioItem key={i} value={["fhd", "hd", "sd"][i]}>
+                        <DropdownMenuRadioItem
+                          disabled={highestQuality === ""}
+                          key={i}
+                          value={["fhd", "hd", "sd"][i]}
+                        >
                           {["Full HD", "HD", "SD"][i]}
                         </DropdownMenuRadioItem>
                       )

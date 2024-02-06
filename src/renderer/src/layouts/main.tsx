@@ -2,7 +2,17 @@ import Header from "@/components/header"
 import { Outlet } from "react-router-dom"
 import Sidebar from "@/components/sidebar"
 
+const startTimestamp = new Date()
 export default function MainLayout() {
+  window.electron.ipcRenderer.send("discord:rpc", {
+    details: "In the rabbit hole",
+    state: "Digging through the catalog",
+    startTimestamp,
+    largeImageKey: "icon",
+    largeImageText: "Rabbit Hole",
+    instance: false,
+  })
+
   return (
     <>
       <Header />

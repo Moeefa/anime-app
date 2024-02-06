@@ -1,6 +1,7 @@
-import { BrowserWindow, app, ipcMain, nativeTheme, session, shell } from "electron"
+import { BrowserWindow, app, ipcMain, ipcRenderer, nativeTheme, session, shell } from "electron"
 import { electronApp, is, optimizer } from "@electron-toolkit/utils"
 
+import DiscordRPC from "discord-rpc"
 import Store from "electron-store"
 import { autoUpdater } from "electron-updater"
 import icon from "../../resources/icon.png?asset"
@@ -38,6 +39,10 @@ function createWindow(): void {
     },
   })
 
+  const rpc = new DiscordRPC.Client({ transport: "ipc" })
+
+  rpc.login({ clientId: "1203896482659565619" }).catch(() => console.error("RPC failed to login"))
+
   nativeTheme.on("updated", () => {
     win.setTitleBarOverlay({
       color: nativeTheme.shouldUseDarkColors ? "#1e1e1e" : "#ffffff",
@@ -46,10 +51,14 @@ function createWindow(): void {
     })
   })
 
-  ipcMain.on("dark-mode:toggle", () => {
+  ipcMain.handle("dark-mode:toggle", () => {
     nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? "light" : "dark"
 
     return nativeTheme.shouldUseDarkColors
+  })
+
+  ipcMain.on("discord:rpc", (_, presence) => {
+    rpc.setActivity(presence).catch(() => console.error("RPC failed to set activity"))
   })
 
   win.on("ready-to-show", () => {
@@ -100,14 +109,14 @@ function createWindow(): void {
   } else {
     win.loadFile(join(__dirname, "../renderer/index.html"))
   }
-
-  autoUpdater.checkForUpdates()
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
+  autoUpdater.checkForUpdates()
+
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron")
 
