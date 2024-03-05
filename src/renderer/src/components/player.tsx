@@ -1,4 +1,16 @@
 import {
+  ArrowLeft16Regular,
+  FastForward20Regular,
+  FullScreenMaximize16Regular,
+  Pause16Regular,
+  PictureInPicture16Regular,
+  Play16Regular,
+  Settings16Regular,
+  Speaker016Regular,
+  Speaker116Regular,
+  Speaker216Regular,
+} from "@fluentui/react-icons";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
@@ -6,165 +18,153 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
-  Fullscreen,
-  MoveLeft,
-  Pause,
-  PictureInPicture2,
-  Play,
-  Settings,
-  StepForward,
-  Volume1,
-  Volume2,
-  VolumeX,
-} from "lucide-react"
-import { MutableRefObject, RefObject, useEffect, useRef, useState } from "react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn, time } from "@/lib/utils";
+import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
-import React from "react"
-import ReactPlayer from "react-player"
-import { Slider } from "@/components/ui/slider"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { IGetWatchURL } from "src/types/watch";
+import { Link } from "react-router-dom";
+import { PlayerContext } from "@/contexts/player-context";
+import ReactPlayer from "react-player";
+import { Slider } from "@/components/ui/slider";
 
-const transform = {
-  "1080p": "fhd",
-  "720p": "hd",
-  "480p": "sd",
-}
-
-const startTimestamp = new Date()
-let timeout: string | number | NodeJS.Timeout | undefined
+const startTimestamp = new Date();
+let timeout: string | number | NodeJS.Timeout | undefined;
 export default function Player({
   className = "",
-  src,
+  sources,
   ...props
 }: {
-  className?: string
-  src: string
+  className?: string;
+  sources: IGetWatchURL["sources"];
 }): React.ReactElement {
-  const playerRef = useRef() as MutableRefObject<ReactPlayer>
-  const wrapperRef = useRef() as RefObject<HTMLDivElement>
-  const controlsRef = useRef() as RefObject<HTMLDivElement>
-  const [playing, setPlaying] = useState(true)
-  const [showPip, setShowPip] = useState(false)
-  const [showControls, setShowControls] = useState(false)
-  const [showVolume, setShowVolume] = useState(false)
-  const [playedSeconds, setPlayedSeconds] = useState([0])
-  const [volume, setVolume] = useState<number>(window.storage.get("settings.volume") || 100)
-  const [highestQuality, setHighestQuality] = useState("")
-  const [quality, setQuality] = useState("")
+  const { state, update } = useContext(PlayerContext);
+  const playerRef = useRef<ReactPlayer>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
 
-  window.electron.ipcRenderer.send("discord:rpc", {
-    startTimestamp,
-    details: props["data-title"],
-    state: `Watching episode ${props["data-episode"]}`,
-    largeImageKey: "icon",
-    largeImageText: "Rabbit Hole",
-    smallImageKey: "watching",
-    smallImageText: "Watching",
-    instance: false,
-  })
+  useEffect(() => {
+    update("quality").set(Object.keys(sources).at(-1));
+  }, [sources]);
 
-  const handleQuality = (quality: string) => {
-    if (/(1080p|720p|480p)/g.test(playerRef.current.getInternalPlayer().src))
-      quality = Object.fromEntries(Object.entries(transform).map((a) => a.reverse()))[quality]
+  useEffect(() => {
+    window.electron.ipcRenderer.send("discord:rpc", {
+      startTimestamp,
+      details: props["data-title"],
+      state: `Watching episode ${props["data-episode"]}`,
+      largeImageKey: "icon",
+      largeImageText: "Rabbit Hole",
+      smallImageKey: "watching",
+      smallImageText: "Watching",
+      instance: false,
+    });
+  }, []);
 
-    const currentTime = playerRef.current.getCurrentTime()
-    playerRef.current.getInternalPlayer().src = playerRef.current
-      .getInternalPlayer()
-      .src.replace(/(fhd|hd|sd|1080p|720p|480p)/g, quality)
-    playerRef.current.seekTo(currentTime)
-  }
-
-  const formatTime = (durationSeconds: number) => {
-    const hrs = Math.floor(durationSeconds / 3600)
-    const mins = Math.floor((durationSeconds % 3600) / 60)
-    const secs = Math.floor(durationSeconds % 60)
-
-    let formated = hrs !== 0 ? `${hrs.toString().padStart(2, "0")}:` : ""
-
-    return (formated += `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`)
-  }
-
-  const whenMouseMoves = () => {
-    clearTimeout(timeout)
-    setShowControls(true)
+  const resetIdleCursor = () => {
+    clearTimeout(timeout);
+    update("controls.main").set(true);
     timeout = setTimeout(() => {
-      setShowControls(false)
-      setShowVolume(false)
-    }, 3000)
-  }
+      update("controls.main").set(false);
+      update("controls.volume").set(false);
+      update("controls.settings").set(false);
+    }, 3000);
+  };
+
+  const handleQuality = (value: string) => {
+    if (!playerRef.current) return;
+    update("quality").set(value);
+
+    const currentTime = playerRef.current.getCurrentTime();
+    playerRef.current.getInternalPlayer().src = sources[value];
+    playerRef.current.seekTo(currentTime);
+  };
 
   const handleKeys = (e: React.KeyboardEvent<HTMLDivElement>) => {
     switch (e.code) {
       case "ArrowLeft":
-        setPlaying(false)
-        playerRef.current.seekTo(Math.floor(playedSeconds[0]) - 5)
-        break
+        playerRef.current?.seekTo(
+          (playerRef.current?.getCurrentTime() || 0) - 5
+        );
+
+        break;
 
       case "ArrowRight":
-        setPlaying(false)
-        playerRef.current.seekTo(Math.floor(playedSeconds[0]) + 5)
-        break
+        playerRef.current?.seekTo(
+          (playerRef.current?.getCurrentTime() || 0) + 5
+        );
+
+        break;
 
       case "Space":
-        whenMouseMoves()
-        setPlaying((state) => !state)
-        break
+        resetIdleCursor();
+        update("playing").toggle();
+
+        break;
 
       case "Escape":
-        window.electron.ipcRenderer.send("fullscreen")
-        break
+        window.electron.ipcRenderer.send("fullscreen");
+
+        break;
 
       case "KeyP":
-        setShowPip((state) => !state)
-        break
+        update("pip").toggle();
+
+        break;
 
       case "KeyV":
-        whenMouseMoves()
-        setShowVolume((state) => !state)
-        break
+        resetIdleCursor();
+        update("controls.volume").toggle();
+
+        break;
     }
-  }
+  };
 
   return (
     <>
       <div
         className={cn(
           "outline-none relative overflow-hidden flex flex-col justify-center items-center group aspect-video cursor-none data-[enabled=true]:cursor-auto w-full h-full",
-          className,
+          className
         )}
         tabIndex={0}
-        data-enabled={showControls}
+        data-enabled={state.controls.main}
         ref={wrapperRef}
-        onMouseMove={whenMouseMoves}
+        onMouseMove={resetIdleCursor}
         onKeyDown={handleKeys}
       >
         <div
           className="h-full w-full overflow-hidden"
-          onClick={() => setPlaying((state) => !state)}
+          onClick={() => update("playing").toggle()}
         >
           <ReactPlayer
             width="100%"
             height="100%"
             ref={playerRef}
             controls={false}
-            volume={Number(volume || 0) / 100}
-            playing={playing}
-            onEnded={() => setPlaying(false)}
-            onProgress={(state) => setPlayedSeconds([state.playedSeconds])}
-            onReady={() =>
-              highestQuality === "" &&
-              setHighestQuality(
-                playerRef.current?.getInternalPlayer().src.match(/(fhd|hd|sd|1080p|720p|480p)/g)[0],
-              )
+            playing={state.playing}
+            pip={state.pip}
+            volume={Number(state.volume || 0) / 100}
+            onEnded={() => update("playing").set(false)}
+            onBuffer={() => console.log("buffering")}
+            onDuration={(duration) => update("duration").set(duration)}
+            onProgress={({ playedSeconds }) =>
+              update("played").set(playedSeconds)
             }
-            pip={showPip}
-            url={src}
+            url={Object.entries(sources)
+              .reverse()
+              .map(([_k, v]) => v)}
           />
         </div>
         <div className="draggable text-white gap-4 transition-all delay-300 -translate-y-80 group-data-[enabled=true]:translate-y-0 bg-gradient-to-t from-transparent to-black/40 items-center w-full flex absolute top-0 mt-auto p-6">
@@ -172,14 +172,17 @@ export default function Player({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link tabIndex={-1} to={`/episodes?url=${props["data-origin"]}`}>
+                  <Link
+                    tabIndex={-1}
+                    to={`/episodes?url=${props["data-origin"]}`}
+                  >
                     <Button
                       size="icon"
                       className="rounded-full titlebar-actions"
                       variant="secondary"
                       tabIndex={-1}
                     >
-                      <MoveLeft className="w-4 h-4" />
+                      <ArrowLeft16Regular />
                     </Button>
                   </Link>
                 </TooltipTrigger>
@@ -188,9 +191,9 @@ export default function Player({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <h2 className="scroll-m-20 text-xl text-white font-extrabold tracking-tight titlebar-actions">
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight titlebar-actions">
               Episódio {props["data-episode"]}
-            </h2>
+            </h3>
           </div>
         </div>
         <div
@@ -200,20 +203,19 @@ export default function Player({
         >
           <div className="flex flex-col gap-4 w-full">
             <div className="flex w-full">
-              <h2 className="scroll-m-20 border-b pb-2 text-xl text-white border-white font-extrabold tracking-tight first:mt-0">
+              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                 {props["data-title"]}
-              </h2>
+              </h3>
             </div>
             <div className="flex w-full items-center gap-4">
               <Button
                 variant="secondary"
                 className="rounded-full"
                 size="icon"
-                onClick={() => setPlaying((state) => !state)}
-                data-clickable={true}
+                onClick={() => update("playing").toggle()}
                 tabIndex={-1}
               >
-                {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {state.playing ? <Pause16Regular /> : <Play16Regular />}
               </Button>
 
               {!props["data-disable-next"] ? (
@@ -222,10 +224,10 @@ export default function Player({
                     variant="secondary"
                     className="rounded-full"
                     size="icon"
-                    onClick={() => setPlaying((state) => !state)}
+                    onClick={() => update("playing").toggle()}
                     tabIndex={-1}
                   >
-                    <StepForward className="w-4 h-4" />
+                    <FastForward20Regular />
                   </Button>
                 </Link>
               ) : (
@@ -233,65 +235,65 @@ export default function Player({
               )}
 
               <small className="text-sm text-white font-medium leading-none">
-                {formatTime(playerRef.current?.getCurrentTime() || 0)}
+                {time(playerRef.current?.getCurrentTime() || 0)}
               </small>
 
               <Slider
+                tabIndex={-1}
                 background="bg-white"
                 className="flex-1"
                 max={playerRef.current?.getDuration() || 0}
-                value={playedSeconds}
+                value={[playerRef.current?.getCurrentTime() || 0]}
+                onPointerDown={() => update("playing").set(false)}
+                onPointerUp={() => update("playing").set(true)}
                 onValueChange={(value) => {
-                  whenMouseMoves()
-                  playerRef.current.seekTo(value[0])
+                  resetIdleCursor();
+                  playerRef.current?.seekTo(value[0]);
                 }}
-                onPointerDown={() => {
-                  setPlaying(false), whenMouseMoves()
-                }}
-                onPointerUp={() => setPlaying(true)}
-                tabIndex={-1}
               />
 
               <small className="text-sm text-white font-medium leading-none">
-                {formatTime(playerRef.current?.getDuration() || 0)}
+                {time(playerRef.current?.getDuration() || 0)}
               </small>
 
-              <Popover open={showVolume}>
+              <Popover open={state.controls.volume}>
                 <PopoverTrigger asChild>
                   <Button
-                    onClick={() => setShowVolume((state) => !state)}
+                    onClick={() => update("controls.volume").toggle()}
                     variant="secondary"
                     className="rounded-full"
                     size="icon"
                     tabIndex={-1}
                   >
-                    {volume === 0 ? (
-                      <VolumeX className="w-4 h-4" />
-                    ) : volume < 50 ? (
-                      <Volume1 className="w-4 h-4" />
+                    {state.volume === 0 ? (
+                      <Speaker016Regular />
+                    ) : state.volume < 50 ? (
+                      <Speaker116Regular />
                     ) : (
-                      <Volume2 className="w-4 h-4" />
+                      <Speaker216Regular />
                     )}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  onMouseEnter={whenMouseMoves}
+                  onMouseEnter={resetIdleCursor}
                   onEscapeKeyDown={(e) => e.preventDefault()}
                   container={controlsRef.current}
                   side="top"
                   className="w-[50px] flex-col flex items-center justify-center"
                 >
-                  <small className="text-sm font-medium leading-none mb-2">{volume}%</small>
+                  <small className="text-sm font-medium leading-none mb-2">
+                    {state.volume}%
+                  </small>
                   <Slider
-                    onValueChange={(value) => {
-                      window.storage.set("settings.volume", Number(value))
-                      setVolume(Number(value))
-                    }}
-                    defaultValue={[volume]}
+                    defaultValue={[state.volume]}
                     max={100}
                     min={0}
                     orientation="vertical"
                     tabIndex={-1}
+                    onValueChange={(value) => {
+                      window.storage.set("settings.volume", Number(value));
+                      update("volume").set(Number(value));
+                    }}
                   />
                 </PopoverContent>
               </Popover>
@@ -300,42 +302,48 @@ export default function Player({
                 variant="secondary"
                 className="rounded-full"
                 size="icon"
-                onClick={() => setShowPip((state) => !state)}
+                onClick={() => update("pip").toggle()}
                 tabIndex={-1}
               >
-                <PictureInPicture2 className="w-4 h-4" />
+                <PictureInPicture16Regular />
               </Button>
 
-              <DropdownMenu>
+              <DropdownMenu
+                open={state.controls.settings}
+                onOpenChange={() => update("controls.settings").toggle()}
+              >
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" className="rounded-full" size="icon" tabIndex={-1}>
-                    <Settings className="w-4 h-4" />
+                  <Button
+                    variant="secondary"
+                    disabled={Object.keys(sources).length === 0}
+                    className="rounded-full"
+                    size="icon"
+                    tabIndex={-1}
+                  >
+                    <Settings16Regular />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>Quality</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup
-                    value={quality || transform[highestQuality] || highestQuality}
-                    onValueChange={(value) => {
-                      setQuality(value)
-                      handleQuality(value)
-                    }}
+                    value={state.quality}
+                    onValueChange={handleQuality}
                   >
-                    {[...Array(3)].map((_, i) => {
-                      if (["sd", "480p"].includes(highestQuality) && i <= 1) return
-                      if (["hd", "720p"].includes(highestQuality) && i === 0) return
-
-                      return (
-                        <DropdownMenuRadioItem
-                          disabled={highestQuality === ""}
-                          key={i}
-                          value={["fhd", "hd", "sd"][i]}
-                        >
-                          {["Full HD", "HD", "SD"][i]}
-                        </DropdownMenuRadioItem>
-                      )
-                    })}
+                    {Object.entries(sources)
+                      .reverse()
+                      .map(([key, _], i) => {
+                        return (
+                          <DropdownMenuRadioItem
+                            key={i}
+                            disabled={Object.keys(sources).length === 0}
+                            value={key}
+                            tabIndex={-1}
+                          >
+                            {key}
+                          </DropdownMenuRadioItem>
+                        );
+                      })}
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -345,16 +353,14 @@ export default function Player({
                 className="rounded-full"
                 size="icon"
                 tabIndex={-1}
-                onClick={() => {
-                  window.electron.ipcRenderer.send("fullscreen")
-                }}
+                onClick={() => window.electron.ipcRenderer.send("fullscreen")}
               >
-                <Fullscreen className="w-4 h-4" />
+                <FullScreenMaximize16Regular className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

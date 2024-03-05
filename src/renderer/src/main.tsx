@@ -1,10 +1,10 @@
-import "./assets/globals.css"
+import "./assets/globals.css";
 
-import { HashRouter } from "react-router-dom"
-import React from "react"
-import ReactDOM from "react-dom/client"
-import Routes from "@/router"
-import { SWRConfig } from "swr"
+import { HashRouter } from "react-router-dom";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Routes from "@/router";
+import { SWRConfig } from "swr";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -19,5 +19,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Routes />
       </HashRouter>
     </SWRConfig>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

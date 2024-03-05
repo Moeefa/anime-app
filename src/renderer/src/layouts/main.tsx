@@ -1,8 +1,8 @@
-import Header from "@/components/header"
-import { Outlet } from "react-router-dom"
-import Sidebar from "@/components/sidebar"
+import Header from "@/components/header";
+import { Outlet } from "react-router-dom";
+import Sidebar from "@/components/sidebar";
 
-const startTimestamp = new Date()
+const startTimestamp = new Date();
 export default function MainLayout() {
   window.electron.ipcRenderer.send("discord:rpc", {
     details: "In the rabbit hole",
@@ -11,19 +11,17 @@ export default function MainLayout() {
     largeImageKey: "icon",
     largeImageText: "Rabbit Hole",
     instance: false,
-  })
+  });
 
   return (
     <>
       <Header />
-      <div className="flex overflow-hidden">
-        <Sidebar className="fixed float-left top-[var(--titlebar-height)] w-[var(--sidebar-width)] bg-card h-[calc(100vh-var(--titlebar-height))]" />
-        <main className="float-right overflow-auto h-screen container p-6 w-[calc(100%-var(--sidebar-width))] mt-[var(--titlebar-height)] ml-[var(--sidebar-width)]">
-          <div className="pb-6">
-            <Outlet />
-          </div>
+      <div className="flex">
+        <Sidebar className="min-w-52 float-left top-[var(--titlebar-height)] h-[calc(100vh-var(--titlebar-height))]" />
+        <main className="overflow-auto min-w-[50%] h-[calc(100vh-40px)] shadow-lg dark:shadow-zinc-900 container p-6 pb-0 flex-1 mr-[10px] mt-[var(--titlebar-height)]">
+          <Outlet />
         </main>
       </div>
     </>
-  )
+  );
 }

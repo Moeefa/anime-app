@@ -1,7 +1,7 @@
-import { defineConfig, externalizeDepsPlugin } from "electron-vite"
+import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 
-import react from "@vitejs/plugin-react"
-import { resolve } from "path"
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 
 export default defineConfig({
   main: {
@@ -18,4 +18,4 @@ export default defineConfig({
     },
     plugins: [react()],
   },
-})
+});

@@ -1,28 +1,24 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
 
-import { IAnime } from "src/types/anime"
-import React from "react"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import useSWR from "swr"
+import { IAnime } from "src/types/anime";
+import React from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import useSWR from "swr";
 
 export default function Episodes(): React.ReactElement {
-  const location = useLocation()
-  const params = new URLSearchParams(location.search)
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
 
-  const {
-    data,
-    error,
-    isLoading,
-  }: { data: IAnime | undefined; error: unknown; isLoading: boolean } = useSWR(
-    `${window.api.URL}/anime?url=${params.get("url")}&site=${window.api.SITE}`,
-  )
+  const { data, error, isLoading } = useSWR<IAnime>(
+    `${window.api.BASE_URL}/anime?url=${encodeURIComponent(params.get("url")!)}&site=${window.storage.get("settings.provider") || window.api.PROVIDER}`
+  );
 
   return (
     <>
       <div>
         <div className="flex gap-6">
           {error
-            ? "Couldn't fetch the episodes!"
+            ? "Couldn't fetch the episode!"
             : !isLoading && (
                 <>
                   <div className="w-56 space-y-4">
@@ -34,12 +30,13 @@ export default function Episodes(): React.ReactElement {
                     <div>
                       <ScrollArea className="w-full max-h-48 rounded-md border mb-6 overflow-auto">
                         <div className="p-4 h-full">
-                          {data?.seasons.length === 0 ? (
+                          {data && data.seasons?.length === 0 ? (
                             <div className="flex justify-center items-center h-full">
                               <p>Não possui episódios!</p>
                             </div>
                           ) : (
-                            data?.seasons.map((season, i) => (
+                            data &&
+                            data.seasons?.map((season, i) => (
                               <div key={i}>
                                 <h4 className="mb-4 text-sm font-medium leading-none">
                                   {season.title}
@@ -64,12 +61,14 @@ export default function Episodes(): React.ReactElement {
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                       {data?.title}
                     </h3>
-                    <small className="text-sm leading-none">{data?.description}</small>
+                    <small className="text-sm leading-none">
+                      {data?.description}
+                    </small>
                   </div>
                 </>
               )}
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -1,42 +1,43 @@
-import { ISearch, ISearchItem } from "src/types/search"
-import { ScrollArea, ScrollBar, Viewport } from "@/components/ui/scroll-area"
+import { ISearch, ISearchItem } from "src/types/search";
+import { ScrollArea, ScrollBar, Viewport } from "@/components/ui/scroll-area";
 
-import Card from "@/components/card"
-import React from "react"
-import useSWR from "swr"
+import Card from "@/components/card";
+import React from "react";
+import useSWR from "swr";
 
 export default function ListItems({
   title,
   url,
   video = false,
 }: {
-  title: string
-  url: string
-  video?: boolean
+  title: string;
+  url: string;
+  video?: boolean;
 }): React.ReactElement {
-  const {
-    data,
-    error,
-    isLoading,
-  }: { data: ISearch | undefined; error: unknown; isLoading: boolean } = useSWR(url)
+  const { data, error, isLoading } = useSWR<ISearch>(url);
 
   return (
     <>
-      <div data-video={video} className="group">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{title}</h3>
+      <div>
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          {title}
+        </h3>
         <ScrollArea className="flex justify-center pb-2">
           <Viewport>
-            <div className="flex w-max group-data-[video=false]:space-x-4 group-data-[video=true]:space-x-5 p-4">
+            <div
+              data-video={video}
+              className="flex w-max data-[video=false]:space-x-4 data-[video=true]:space-x-5 p-4"
+            >
               {error && !data
                 ? "Couldn't get the list!"
                 : !isLoading &&
-                  data?.items.map((item: ISearchItem, i: React.Key | null | undefined) => (
+                  data!.items?.length > 0 &&
+                  data?.items.map((item, i) => (
                     <Card
-                      video={video}
-                      src={item.image}
-                      title={item.title}
-                      url={item.url}
                       key={i}
+                      data-video={video}
+                      title={item.title}
+                      data={item}
                     />
                   ))}
             </div>
@@ -45,5 +46,5 @@ export default function ListItems({
         </ScrollArea>
       </div>
     </>
-  )
+  );
 }

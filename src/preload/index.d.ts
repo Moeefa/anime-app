@@ -1,18 +1,18 @@
-import { ElectronAPI } from "@electron-toolkit/preload"
-import { ipcRenderer } from "electron"
+import { ElectronAPI } from "@electron-toolkit/preload";
+import { ipcRenderer } from "electron";
 
 declare global {
   interface Window {
-    electron: ElectronAPI
+    electron: ElectronAPI;
     api: {
-      URL: string
-      SITE: "AnimeFire" | "AnimesOnline"
-    }
+      BASE_URL: string;
+      PROVIDER: string;
+    };
     storage: {
-      set: <T>(key: string, value: T) => void
-      get: <T>(key: string) => T
-      remove: (key: string) => void
-      clear: () => void
-    }
+      set: <T>(key: string, value: T) => void;
+      get: <T>(key: string) => T;
+      remove: (key: string) => void;
+      clear: () => void;
+    };
   }
 }

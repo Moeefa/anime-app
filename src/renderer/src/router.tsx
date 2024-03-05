@@ -1,14 +1,14 @@
-import { Route, Routes, useLocation } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom";
 
-import DisplayItems from "@/layouts/display-items"
-import Episodes from "@/pages/episodes"
-import Home from "@/pages/home"
-import MainLayout from "@/layouts/main"
-import Watch from "@/pages/watch"
+import DisplayItems from "@/layouts/display-items";
+import Episodes from "@/pages/episodes";
+import Home from "@/pages/home";
+import MainLayout from "@/layouts/main";
+import Watch from "@/pages/watch";
 
 export default function RoutesElement() {
-  const location = useLocation()
-  const params = new URLSearchParams(location.search)
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
 
   return (
     <Routes>
@@ -21,7 +21,7 @@ export default function RoutesElement() {
           element={
             <DisplayItems
               title="Search"
-              url={`${window.api.URL}/search?search=${params.get("q")?.split(" ").join("-")}&site=${window.api.SITE}&page=1`}
+              url={`${window.api.BASE_URL}/search?search=${params.get("q")?.split(" ").join("-")}&site=${window.storage.get("settings.provider") || window.api.PROVIDER}&page=1`}
             />
           }
         />
@@ -30,7 +30,7 @@ export default function RoutesElement() {
           element={
             <DisplayItems
               title="Popular"
-              url={`${window.api.URL}/popular?site=${window.api.SITE}&page=1`}
+              url={`${window.api.BASE_URL}/popular?site=${window.storage.get("settings.provider") || window.api.PROVIDER}&page=1`}
             />
           }
         />
@@ -39,7 +39,7 @@ export default function RoutesElement() {
           element={
             <DisplayItems
               title="Latest animes"
-              url={`${window.api.URL}/latest/animes?site=${window.api.SITE}&page=1`}
+              url={`${window.api.BASE_URL}/latest/animes?site=${window.storage.get("settings.provider") || window.api.PROVIDER}&page=1`}
             />
           }
         />
@@ -49,11 +49,11 @@ export default function RoutesElement() {
             <DisplayItems
               video
               title="Latest episodes"
-              url={`${window.api.URL}/latest/episodes?site=${window.api.SITE}&page=1`}
+              url={`${window.api.BASE_URL}/latest/episodes?site=${window.storage.get("settings.provider") || window.api.PROVIDER}&page=1`}
             />
           }
         />
       </Route>
     </Routes>
-  )
+  );
 }
