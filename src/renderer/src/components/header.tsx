@@ -23,6 +23,7 @@ import {
 import { Button } from "./ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
 const Icon = () => (
@@ -43,6 +44,7 @@ const Icon = () => (
 export default function Header({
   className,
 }: React.HTMLAttributes<HTMLDivElement>): JSX.Element {
+  const navigate = useNavigate();
   const [online, setOnline] = React.useState(true);
   const [shouldUseDarkColors, setShouldUseDarkColors] = React.useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -79,7 +81,7 @@ export default function Header({
                         key={site}
                         onClick={() => {
                           window.storage.set("settings.provider", site);
-                          window.location.replace("/");
+                          navigate("/");
                         }}
                       >
                         {site}
@@ -90,7 +92,7 @@ export default function Header({
                 <MenubarItem
                   onClick={() => {
                     window.storage.remove("recents.episodes");
-                    window.location.reload();
+                    navigate(0);
                   }}
                 >
                   <Archive16Regular className="mr-2" />

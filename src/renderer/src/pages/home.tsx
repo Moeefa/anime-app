@@ -12,8 +12,11 @@ import Card from "@/components/card";
 import { Link } from "react-router-dom";
 import ListItems from "@/components/list-items";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home(): React.ReactElement {
+  const navigate = useNavigate();
+
   return (
     <>
       {((window.storage.get("recents.episodes") as []) || []).filter(
@@ -76,7 +79,7 @@ export default function Home(): React.ReactElement {
                                 )
                               );
 
-                              window.location.reload();
+                              navigate(0);
                             }}
                           >
                             <Archive16Regular className="mr-2" />
