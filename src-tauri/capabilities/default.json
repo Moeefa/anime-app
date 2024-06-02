@@ -1,0 +1,61 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main", "settings"],
+  "permissions": [
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://*/*"
+        },
+        {
+          "url": "https://animefire.plus/*"
+        }
+      ]
+    },
+    "path:default",
+    "event:default",
+    "window:default",
+    "app:default",
+    "image:default",
+    "resources:default",
+    "menu:default",
+    "tray:default",
+    "shell:allow-open",
+    "window:allow-start-dragging",
+    "window:allow-minimize",
+    "window:allow-maximize",
+    "window:allow-unmaximize",
+    "window:allow-toggle-maximize",
+    "window:allow-set-resizable",
+    "window:allow-is-resizable",
+    "window:allow-close",
+    "window:allow-set-fullscreen",
+    "webview:allow-internal-toggle-devtools",
+    "os:allow-os-type",
+    "webview:allow-create-webview-window",
+    "window:allow-hide",
+    "window:allow-create",
+    "window:allow-center",
+    "window:allow-show",
+    "window:allow-set-effects",
+    "store:default",
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-delete",
+    "store:allow-clear",
+    "store:allow-keys",
+    "store:allow-values",
+    "store:allow-has",
+    "store:allow-load",
+    "store:allow-save",
+    "store:allow-length",
+    "shell:default",
+    "shell:allow-open",
+    "process:default",
+    "process:allow-restart",
+    "process:allow-exit"
+  ]
+}

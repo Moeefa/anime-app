@@ -1,0 +1,44 @@
+{
+  "productName": "Rabbit Hole",
+  "version": "0.0.0",
+  "identifier": "com.moeefa.rabbithole",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Rabbit Hole",
+        "width": 1000,
+        "height": 562,
+        "minWidth": 500,
+        "minHeight": 300,
+        "decorations": false,
+        "transparent": true,
+        "shadow": true,
+        "center": true,
+        "resizable": true,
+        "windowEffects": {
+          "effects": ["mica", "fullScreenUI"]
+        }
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
