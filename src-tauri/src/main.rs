@@ -46,7 +46,6 @@ fn main() {
       .title("Rabbit Hole")
       .resizable(true)
       .decorations(false)
-      .transparent(true)
       .inner_size(1000.0, 562.0)
       .min_inner_size(500.0, 300.0)
       .center()
@@ -56,8 +55,8 @@ fn main() {
           .build(),
       );
 
-      #[cfg(target_os = "linux")]
-      let main_window = main_window.transparent(false);
+      #[cfg(target_os = "windows")]
+      let main_window = main_window.transparent(true);
 
       main_window.build().unwrap();
 
