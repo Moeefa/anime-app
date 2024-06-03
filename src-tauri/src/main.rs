@@ -1,11 +1,8 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[allow(unused_imports)]
 use tauri::{
-  menu::{Menu, MenuItem},
-  window::{Color, Effect, EffectState, EffectsBuilder},
-  Manager, WebviewWindow, WindowEvent,
+  window::{Effect, EffectsBuilder},
+  WindowEvent,
 };
 
 #[tauri::command]
@@ -39,7 +36,7 @@ fn main() {
     })
     .setup(|app| {
       let main_window = tauri::WebviewWindowBuilder::new(
-        app.app_handle(),
+        app.handle(),
         "main",
         tauri::WebviewUrl::App("/".into()),
       )
