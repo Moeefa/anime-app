@@ -35,22 +35,19 @@ fn main() {
       _ => {}
     })
     .setup(|app| {
-      let main_window = tauri::WebviewWindowBuilder::new(
-        app.handle(),
-        "main",
-        tauri::WebviewUrl::App("/".into()),
-      )
-      .title("Rabbit Hole")
-      .resizable(true)
-      .decorations(false)
-      .inner_size(1000.0, 562.0)
-      .min_inner_size(500.0, 300.0)
-      .center()
-      .effects(
-        EffectsBuilder::new()
-          .effects([Effect::Mica, Effect::FullScreenUI])
-          .build(),
-      );
+      let main_window =
+        tauri::WebviewWindowBuilder::new(app.handle(), "main", tauri::WebviewUrl::App("/".into()))
+          .title("Rabbit Hole")
+          .resizable(true)
+          .decorations(false)
+          .inner_size(1000.0, 562.0)
+          .min_inner_size(500.0, 300.0)
+          .center()
+          .effects(
+            EffectsBuilder::new()
+              .effects([Effect::Mica, Effect::FullScreenUI])
+              .build(),
+          );
 
       #[cfg(target_os = "windows")]
       let main_window = main_window.transparent(true);
