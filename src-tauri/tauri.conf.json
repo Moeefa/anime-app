@@ -9,23 +9,7 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [
-      {
-        "title": "Rabbit Hole",
-        "width": 1000,
-        "height": 562,
-        "minWidth": 500,
-        "minHeight": 300,
-        "decorations": false,
-        "transparent": true,
-        "shadow": true,
-        "center": true,
-        "resizable": true,
-        "windowEffects": {
-          "effects": ["mica", "fullScreenUI"]
-        }
-      }
-    ],
+    "windows": [],
     "security": {
       "csp": null
     }
