@@ -11,7 +11,7 @@ use tauri::window::EffectsBuilder;
 use tauri::WindowEvent;
 
 lazy_static! {
-  pub static ref DISCORD: Mutex<Discord> = Mutex::new(Discord::new());
+  pub static ref CLIENT: Mutex<Discord> = Mutex::new(Discord::new());
 }
 
 #[tauri::command]
@@ -23,10 +23,10 @@ async fn update_discord_rpc(
   start: i64,
   end: i64,
 ) {
-  DISCORD
-    .lock()
-    .unwrap()
-    .change_activity(state, details, start, end);
+  match CLIENT.lock() {
+    Ok(client) => client.change_activity(state, details, start, end),
+    Err(err) => eprintln!("Error: {:?}", err),
+  };
 }
 
 #[tauri::command]
@@ -45,7 +45,8 @@ async fn open_settings(app: tauri::AppHandle) {
 }
 
 fn main() {
-  DISCORD.lock().unwrap().connect();
+  CLIENT.lock().unwrap().connect();
+
   tauri::Builder::default()
     .plugin(tauri_plugin_process::init())
     .plugin(tauri_plugin_store::Builder::new().build())

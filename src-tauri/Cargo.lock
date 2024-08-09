@@ -819,12 +819,12 @@ dependencies = [
 [[package]]
 name = "discord-rich-presence"
 version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f632a41e3e97febf8edff46b1405f9875894c29e20a25c5abe566872226b3f84"
+source = "git+https://github.com/vionya/discord-rich-presence?branch=main#5620e8901566290a583f9354205686b18628ba1b"
 dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "serde_repr",
  "uuid 0.8.2",
 ]
 

@@ -19,5 +19,5 @@ tauri-plugin-process = "2.0.0-beta"
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-discord-rich-presence = "0.2.4"
+discord-rich-presence = { git = "https://github.com/vionya/discord-rich-presence", branch = "main" }
 lazy_static = "1.5.0"

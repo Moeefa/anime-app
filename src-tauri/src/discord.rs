@@ -1,10 +1,7 @@
-use std::{
-  sync::{Mutex, MutexGuard},
-  time::{SystemTime, UNIX_EPOCH},
-};
+use std::sync::{Mutex, MutexGuard};
 
 use discord_rich_presence::{
-  activity::{self, Assets},
+  activity::{self, Activity, Assets},
   DiscordIpc, DiscordIpcClient,
 };
 
@@ -24,8 +21,7 @@ impl Discord {
 
   pub fn connect(&self) {
     let mut client = self.get_client();
-    let result = client.connect();
-    result.unwrap_or_else(|_| println!("Failed to connect to Discord RPC"));
+    client.connect().unwrap();
   }
 
   pub fn kill(&self) {
@@ -35,7 +31,7 @@ impl Discord {
   }
 
   pub fn get_client(&self) -> MutexGuard<DiscordIpcClient> {
-    return self.client.lock().unwrap();
+    self.client.lock().unwrap()
   }
 
   pub fn change_activity(&self, state: String, details: String, start: i64, end: i64) {
@@ -47,19 +43,15 @@ impl Discord {
       timestamps = activity::Timestamps::new().start(start).end(end);
     }
 
-    client
-      .set_activity(
-        activity::Activity::new()
-          .assets(Assets::new().large_image("icon"))
-          .state(state.as_str())
-          .details(details.as_str())
-          .timestamps(timestamps),
-      )
-      .unwrap_or_else(|_| {
-        println!(
-          "Failed to set activity with state {} and details {}",
-          state, details
-        )
-      });
+    if let Err(_) = client.set_activity(
+      Activity::new()
+        .assets(Assets::new().large_image("icon"))
+        .state(state.as_str())
+        .details(details.as_str())
+        .activity_type(activity::ActivityType::Watching)
+        .timestamps(timestamps),
+    ) {
+      println!("Failed to set activity");
+    }
   }
 }
