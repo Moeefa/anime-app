@@ -1,14 +1,14 @@
 import Card from "@/components/card";
-import { ISearch } from "@/types/search";
-import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Search } from "@/types/search";
+import React from "react";
 
 export default function DisplayItems({
   data,
   title,
   video = false,
 }: {
-  data: ISearch | null;
+  data: Search | null;
   title: string;
   video?: boolean;
 }): React.ReactElement {

@@ -1,8 +1,8 @@
-import React from "react";
 import { ScrollArea, ScrollBar, Viewport } from "@/components/ui/scroll-area";
+import React from "react";
 
 import Card from "@/components/card";
-import { ISearch } from "src/types/search";
+import { Search } from "src/types/search";
 import { Skeleton } from "./ui/skeleton";
 
 export default function ListItems({
@@ -11,7 +11,7 @@ export default function ListItems({
   video = false,
 }: {
   title: string;
-  data: ISearch | null;
+  data: Search | null;
   video?: boolean;
 }): React.ReactElement {
   return (
