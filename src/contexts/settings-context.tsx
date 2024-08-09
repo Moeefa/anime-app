@@ -1,37 +1,39 @@
 import { listen } from "@tauri-apps/api/event";
-import { createContext, useEffect, useState } from "react";
 import { getProperty, setProperty } from "dot-prop";
+import { createContext, useEffect, useState } from "react";
 
 import { Store } from "@tauri-apps/plugin-store";
 
-interface SettingsContextProps {
-  settings: {
-    provider: string;
-    volume: number;
-    transparency: {
-      dark: number;
-      light: number;
-    };
-    background: {
-      dark: string;
-      light: string;
-    };
-    recents: {
-      episode: {
-        image: string;
-      };
-      image: string;
-      title: string;
-      url: string;
-      origin: string;
-      number: number;
-      provider: string;
-    }[];
-    sidebar: {
-      display: boolean;
-      width: string;
-    };
+type SettingsState = {
+  provider: string;
+  volume: number;
+  transparency: {
+    dark: number;
+    light: number;
   };
+  background: {
+    dark: string;
+    light: string;
+  };
+  recents: {
+    episode: {
+      image: string;
+    };
+    image: string;
+    title: string;
+    url: string;
+    origin: string;
+    number: number;
+    provider: string;
+  }[];
+  sidebar: {
+    display: boolean;
+    width: string;
+  };
+};
+
+interface SettingsContextProps {
+  settings: SettingsState;
   state: "fetching" | "fetched";
   set: (value: any) => void;
   update: (key: string) => {

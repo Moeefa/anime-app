@@ -1,18 +1,18 @@
-import { Archive16Regular, ListBar16Regular } from "@fluentui/react-icons";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import React, { useContext } from "react";
 import { ScrollArea, ScrollBar, Viewport } from "@/components/ui/scroll-area";
+import { Archive16Regular, ListBar16Regular } from "@fluentui/react-icons";
+import React, { useContext } from "react";
 
 import Card from "@/components/card";
-import { Link } from "react-router-dom";
 import ListItems from "@/components/list-items";
-import { SettingsContext } from "@/contexts/settings-context";
 import { DataContext } from "@/contexts/data-context";
+import { SettingsContext } from "@/contexts/settings-context";
+import { Link } from "react-router-dom";
 
 export default function Home(): React.ReactElement {
   const { settings, update } = useContext(SettingsContext);
@@ -28,7 +28,7 @@ export default function Home(): React.ReactElement {
           </h3>
           <ScrollArea className="flex justify-center pb-2">
             <Viewport>
-              <div className="flex w-max space-x-5 p-4">
+              <div className="flex w-max space-x-5 py-4">
                 {settings.recents
                   ?.filter((e) => e.provider === settings.provider)
                   .map((item, i) => (
@@ -79,7 +79,7 @@ export default function Home(): React.ReactElement {
       )}
 
       <ListItems title="Popular" data={data.popular} />
-      <ListItems title="Latest animes" data={data.latest.animes} />
+      <ListItems title="Latest releases" data={data.latest.releases} />
       <ListItems video title="Latest episodes" data={data.latest.episodes} />
     </>
   );

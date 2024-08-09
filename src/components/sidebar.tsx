@@ -10,10 +10,10 @@ import {
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { SettingsContext } from "@/contexts/settings-context";
 import { cn } from "@/lib/utils";
 import { emit } from "@tauri-apps/api/event";
+import { Link } from "react-router-dom";
 
 export default function Sidebar({
   className,
@@ -70,7 +70,7 @@ export default function Sidebar({
         {/* Section */}
         <div className="h-full">
           <div className="px-3">
-            <div className="flex items-center gap-2 mb-4 mt-2 flex justify-between">
+            <div className="flex items-center gap-2 mb-4 mt-2 justify-between">
               <p className="text-xs text-muted-foreground font-semibold">
                 Discover
               </p>
@@ -102,13 +102,13 @@ export default function Sidebar({
                   Popular
                 </Button>
               </Link>
-              <Link to="/latest/animes" className="cursor-default">
+              <Link to="/latest/releases" className="cursor-default">
                 <Button
                   variant="ghost"
                   className="w-full gap-2 justify-start hover:bg-black/[.05] dark:hover:bg-white/[.06] cursor-default"
                 >
                   <ChannelAdd16Regular />
-                  Latest animes
+                  Latest releases
                 </Button>
               </Link>
               <Link to="/latest/episodes" className=":cursor-default">

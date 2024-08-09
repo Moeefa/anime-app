@@ -1,8 +1,9 @@
-import { IGetWatchURL } from "../../types/watch";
+import type { Data } from "@/types/data";
+import type { Search } from "@/types/search";
+import type { WatchURL } from "../../types/watch";
 
-import { Engine } from "../engine";
-import { IAnime } from "../../types/anime";
-import { ISearch } from "../../types/search";
+import { Engine } from "@/lib/engine";
+import { removeBaseURL } from "@/lib/utils";
 import { fetch } from "@tauri-apps/plugin-http";
 
 export default class AnimePlus extends Engine {
@@ -10,7 +11,7 @@ export default class AnimePlus extends Engine {
     super("AnimePlus", "https://animeland.appanimeplus.tk/videoweb");
   }
 
-  async latestAnimes(page: number = 1): Promise<ISearch> {
+  async latestReleases(page: number = 1): Promise<Search> {
     return {
       items: [],
       page,
@@ -19,7 +20,7 @@ export default class AnimePlus extends Engine {
     };
   }
 
-  async latestEpisodes(page: number = 1): Promise<ISearch> {
+  async latestEpisodes(page: number = 1): Promise<Search> {
     const res = await fetch(`${this.url}/api.php?action=latestvideos`, {
       method: "GET",
       headers: this.headers,
@@ -42,7 +43,7 @@ export default class AnimePlus extends Engine {
     };
   }
 
-  async popular(): Promise<ISearch> {
+  async popular(): Promise<Search> {
     const res = await fetch(
       `${this.url}/api.php?action=trendingcategory&items=10`,
       {
@@ -66,7 +67,7 @@ export default class AnimePlus extends Engine {
     };
   }
 
-  async search(query: string): Promise<ISearch> {
+  async search(query: string): Promise<Search> {
     const res = await fetch(
       `${this.url}/api.php?action=searchvideo&searchword=${query}`,
       {
@@ -90,8 +91,9 @@ export default class AnimePlus extends Engine {
     };
   }
 
-  async anime(address: string): Promise<IAnime> {
-    const res = await fetch(this.url + this.removeBaseUrl(address), {
+  @removeBaseURL
+  async getData(address: string): Promise<Data> {
+    const res = await fetch(this.url + address, {
       method: "GET",
       headers: this.headers,
     });
@@ -128,7 +130,7 @@ export default class AnimePlus extends Engine {
     };
   }
 
-  async getWatchURL(address: string): Promise<IGetWatchURL | null> {
+  async getWatchURL(address: string): Promise<WatchURL | null> {
     try {
       const hd = new URL(address);
       hd.searchParams.set("qh", "hd");

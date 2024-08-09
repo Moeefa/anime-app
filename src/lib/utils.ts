@@ -1,8 +1,27 @@
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Engine } from "./engine";
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
+}
+
+export function removeBaseURL(
+  target: Engine,
+  _propertyKey: string,
+  descriptor: PropertyDescriptor,
+) {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function (...args: string[]) {
+    args[0] = args[0].replace(target.url, "") ?? "";
+    return originalMethod.apply(this, args);
+  };
+  return descriptor;
+}
+
+export function deprecated(constructor: Engine) {
+  constructor.deprecated = true;
 }
 
 export function resolveTheme(theme: "dark" | "light" | "system") {

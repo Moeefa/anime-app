@@ -1,12 +1,12 @@
 import { Readable } from "stream";
 
-interface IWatch {
+interface Watch {
   headers: object;
   stream: Readable | null;
 }
 
-interface IGetWatchURL {
+interface WatchURL {
   urls: { [index: string]: string };
 }
 
-export type { IGetWatchURL, IWatch };
+export type { Watch, WatchURL };

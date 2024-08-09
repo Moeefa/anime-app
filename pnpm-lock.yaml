@@ -122,6 +122,9 @@ importers:
       '@tauri-apps/plugin-store':
         specifier: 2.0.0-beta.2
         version: 2.0.0-beta.2
+      '@vidstack/react':
+        specifier: ^1.12.3
+        version: 1.12.3(@types/react@18.2.73)(react@18.2.0)
       cheerio:
         specifier: 1.0.0-rc.12
         version: 1.0.0-rc.12
@@ -512,6 +515,9 @@ packages:
   '@floating-ui/core@1.6.0':
     resolution: {integrity: sha512-PcF++MykgmTj3CIyOQbKA/hDzOAiqI3mhuoN44WRCopIs1sgoDoU4oty4Jtqaj/y3oDU6fnVSm4QG0a3t5i0+g==}
 
+  '@floating-ui/dom@1.6.10':
+    resolution: {integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==}
+
   '@floating-ui/dom@1.6.3':
     resolution: {integrity: sha512-RnDthu3mzPlQ31Ss/BTwQ1zjzIhr3lk1gZB1OC56h/1vEtaXkESrOqL5fQVMfXpwGtRwX+YsZBdyHtJMQnkArw==}
 
@@ -523,6 +529,9 @@ packages:
 
   '@floating-ui/utils@0.2.1':
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+
+  '@floating-ui/utils@0.2.7':
+    resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
 
   '@fluentui/react-icons@2.0.233':
     resolution: {integrity: sha512-gt3efrmlJFz3LiJknPpnFtGDF4ah+w+D/0klZit6izOwmb3KGnfqVDtSgupApYW717T9vhwgZKWETGipghiOTw==}
@@ -1410,6 +1419,13 @@ packages:
   '@types/react@18.2.73':
     resolution: {integrity: sha512-XcGdod0Jjv84HOC7N5ziY3x+qL0AfmubvKOZ9hJjJ2yd5EE+KYjWhdOjt387e9HPheHkdggF9atTifMRtyAaRA==}
 
+  '@vidstack/react@1.12.3':
+    resolution: {integrity: sha512-yBZ7d5w1h5WtY1Qvdt0emqP9ILxZBIfDjBY/LC3wLaLSDhH44bgoKOS7+N5tBrIymKg5exn7QT8P2RxunOvkCw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': ^18.0.0
+      react: ^18.0.0
+
   '@vitejs/plugin-react@4.2.1':
     resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -2245,6 +2261,10 @@ packages:
 
   make-error@1.3.6:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
+
+  media-captions@1.0.4:
+    resolution: {integrity: sha512-cyDNmuZvvO4H27rcBq2Eudxo9IZRDCOX/I7VEyqbxsEiD2Ei7UYUhG/Sc5fvMZjmathgz3fEK7iAKqvpY+Ux1w==}
+    engines: {node: '>=16'}
 
   media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
@@ -3284,6 +3304,11 @@ snapshots:
     dependencies:
       '@floating-ui/utils': 0.2.1
 
+  '@floating-ui/dom@1.6.10':
+    dependencies:
+      '@floating-ui/core': 1.6.0
+      '@floating-ui/utils': 0.2.7
+
   '@floating-ui/dom@1.6.3':
     dependencies:
       '@floating-ui/core': 1.6.0
@@ -3296,6 +3321,8 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
 
   '@floating-ui/utils@0.2.1': {}
+
+  '@floating-ui/utils@0.2.7': {}
 
   '@fluentui/react-icons@2.0.233(react@18.2.0)':
     dependencies:
@@ -4260,6 +4287,13 @@ snapshots:
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
+
+  '@vidstack/react@1.12.3(@types/react@18.2.73)(react@18.2.0)':
+    dependencies:
+      '@floating-ui/dom': 1.6.10
+      '@types/react': 18.2.73
+      media-captions: 1.0.4
+      react: 18.2.0
 
   '@vitejs/plugin-react@4.2.1(vite@5.2.7(@types/node@20.12.2))':
     dependencies:
@@ -5229,6 +5263,8 @@ snapshots:
 
   make-error@1.3.6:
     optional: true
+
+  media-captions@1.0.4: {}
 
   media-typer@0.3.0: {}
 

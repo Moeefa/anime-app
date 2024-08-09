@@ -1,6 +1,6 @@
-import { IAnime } from "@/types/anime";
-import { IGetWatchURL } from "@/types/watch";
-import { ISearch } from "@/types/search";
+import { Data } from "@/types/data";
+import { Search } from "@/types/search";
+import { WatchURL } from "@/types/watch";
 
 abstract class Engine {
   name: string;
@@ -20,10 +20,6 @@ abstract class Engine {
     };
   }
 
-  removeBaseUrl(url?: string): string {
-    return url?.replace(this.url, "") ?? "";
-  }
-
   getQualities(src: string) {
     const qualities = ["fhd", "hd", "sd"];
     return qualities
@@ -39,19 +35,19 @@ abstract class Engine {
       })
       .reduce(
         (acc, cur, i) => (cur ? { ...acc, [qualities[i]]: cur } : {}),
-        {}
+        {},
       );
   }
 
-  abstract latestAnimes(page?: number): Promise<ISearch>;
-  abstract latestEpisodes(page?: number): Promise<ISearch>;
-  abstract popular(page?: number): Promise<ISearch>;
-  abstract search(query: string): Promise<ISearch>;
-  abstract anime(url: string): Promise<IAnime>;
+  abstract latestReleases(page?: number): Promise<Search>;
+  abstract latestEpisodes(page?: number): Promise<Search>;
+  abstract popular(page?: number): Promise<Search>;
+  abstract search(query: string): Promise<Search>;
+  abstract getData(url: string): Promise<Data>;
   abstract getWatchURL(
     url: string,
-    response?: Response
-  ): Promise<IGetWatchURL | null>;
+    response?: Response,
+  ): Promise<WatchURL | null>;
 }
 
 export { Engine };

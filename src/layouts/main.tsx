@@ -1,15 +1,29 @@
 import { DEFAULT_SETTINGS, SettingsContext } from "@/contexts/settings-context";
 
 import Header from "@/components/header";
-import { Outlet } from "react-router-dom";
 import Sidebar from "@/components/sidebar";
-import { resolveTheme } from "@/lib/utils";
-import { useContext } from "react";
 import { useTheme } from "@/contexts/theme-provider";
+import { resolveTheme } from "@/lib/utils";
+import { invoke } from "@tauri-apps/api/core";
+import { useContext, useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   const { settings } = useContext(SettingsContext);
   const { theme } = useTheme();
+
+  async function setDiscordRPC() {
+    invoke("update_discord_rpc", {
+      details: "Browsing the web",
+      state: "Just chilling",
+      start: Date.now(),
+      end: 0,
+    });
+  }
+
+  useEffect(() => {
+    setDiscordRPC();
+  }, []);
 
   return (
     <div

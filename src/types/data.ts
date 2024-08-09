@@ -1,29 +1,30 @@
-interface IAnime {
+interface Data {
   title: string;
   image: string;
   tags: string[];
   description: string;
   year: number;
   rating: number;
-  seasons: ISeason[];
-  related: IRelated[] | null;
+  seasons: Season[];
+  related: Related[] | null;
 }
 
-interface ISeason {
+interface Season {
   title: string;
-  episodes: IEpisode[];
+  episodes: Episode[];
 }
 
-interface IRelated {
+interface Related {
   title: string;
   image: string;
   url: string;
 }
 
-interface IEpisode {
+interface Episode {
   title: string;
   url: string;
   image?: string;
 }
 
-export type { IAnime, ISeason, IEpisode };
+export type { Data, Episode, Related, Season };
+

@@ -1,18 +1,18 @@
-import { IAnime, ISeason } from "../../types/anime";
-import { IGetWatchURL } from "../../types/watch";
-import { ISearch, ISearchItem } from "../../types/search";
+import type { Data, Season } from "@/types/data";
+import type { Search, SearchItem } from "@/types/search";
+import type { WatchURL } from "@/types/watch";
 
-import { Engine } from "../engine";
+import { Engine } from "@/lib/engine";
+import { removeBaseURL, retryPromise } from "@/lib/utils";
 import { fetch } from "@tauri-apps/plugin-http";
 import { load } from "cheerio";
-import { retryPromise } from "../utils";
 
 export default class AnimeFire extends Engine {
   constructor() {
     super("AnimeFire", "https://animefire.plus");
   }
 
-  async latestAnimes(page: number = 1): Promise<ISearch> {
+  async latestReleases(page: number = 1): Promise<Search> {
     const search = load(
       await fetch(`${this.url}/em-lancamento/${page}`, {
         method: "GET",
@@ -22,7 +22,7 @@ export default class AnimeFire extends Engine {
 
     const items = search("div.divCardUltimosEps")
       .toArray()
-      .map<ISearchItem>((item) => ({
+      .map<SearchItem>((item) => ({
         title: search(item).find(".animeTitle").text().trim(),
         image: search(item).find(".imgAnimes").attr("data-src") ?? "",
         url: search(item).find("a").attr("href")?.replace(this.url, "") ?? "",
@@ -40,7 +40,7 @@ export default class AnimeFire extends Engine {
     };
   }
 
-  async latestEpisodes(page: number = 1): Promise<ISearch> {
+  async latestEpisodes(page: number = 1): Promise<Search> {
     const search = load(
       await fetch(`${this.url}/home/${page}`, {
         method: "GET",
@@ -50,7 +50,7 @@ export default class AnimeFire extends Engine {
 
     const items = search("div.divCardUltimosEpsHome")
       .toArray()
-      .map<ISearchItem>((item) => ({
+      .map<SearchItem>((item) => ({
         title: search(item).find(".animeTitle").text().trim(),
         image: search(item).find(".imgAnimesUltimosEps").attr("data-src") ?? "",
         url: search(item).find("a").attr("href")?.replace(this.url, "") ?? "",
@@ -90,7 +90,7 @@ export default class AnimeFire extends Engine {
     };
   }
 
-  async popular(): Promise<ISearch> {
+  async popular(): Promise<Search> {
     const search = load(
       await fetch(`${this.url}/top-animes`, {
         method: "GET",
@@ -100,7 +100,7 @@ export default class AnimeFire extends Engine {
 
     const items = search("div.divCardUltimosEps")
       .toArray()
-      .map<ISearchItem>((item) => ({
+      .map<SearchItem>((item) => ({
         title: search(item).find(".animeTitle").text().trim(),
         image: search(item).find(".imgAnimes").attr("data-src") ?? "",
         url: search(item).find("a").attr("href")?.replace(this.url, "") ?? "",
@@ -120,7 +120,7 @@ export default class AnimeFire extends Engine {
     };
   }
 
-  async search(query: string): Promise<ISearch> {
+  async search(query: string): Promise<Search> {
     const search = load(
       await fetch(`${this.url}/pesquisar/${query}`, {
         method: "GET",
@@ -144,9 +144,10 @@ export default class AnimeFire extends Engine {
     };
   }
 
-  async anime(address: string): Promise<IAnime> {
+  @removeBaseURL
+  async getData(address: string): Promise<Data> {
     const search = load(
-      await fetch(`${this.url}/${this.removeBaseUrl(address)}`, {
+      await fetch(`${this.url}/${address}`, {
         method: "GET",
         headers: this.headers,
       }).then(async (res) => await res.text()),
@@ -176,14 +177,15 @@ export default class AnimeFire extends Engine {
 
     const seasons = search(".div_video_list")
       .toArray()
-      .map<ISeason>((season) => {
+      .map<Season>((season) => {
         const title = "Episódios";
         const episodes = search(season)
           .find("a")
           .toArray()
           .map((episode) => {
             const title = search(episode).text().trim();
-            const url = this.removeBaseUrl(search(episode).attr("href"));
+            const url =
+              search(episode).attr("href")?.replace(this.url, "") || this.url;
             const image = "";
 
             return { title, url, image };
@@ -199,7 +201,8 @@ export default class AnimeFire extends Engine {
       .toArray()
       .map((anime) => {
         const title = search(anime).find(".item").attr("alt") ?? "";
-        const url = this.removeBaseUrl(search(anime).find("a").attr("href"));
+        const url =
+          search(anime).find("a").attr("href")?.replace(this.url, "") || "";
         const image = search(anime).find(".item img").attr("src") ?? "";
         return { title, url, image };
       });
@@ -216,7 +219,7 @@ export default class AnimeFire extends Engine {
     };
   }
 
-  async getWatchURL(address: string): Promise<IGetWatchURL | null> {
+  async getWatchURL(address: string): Promise<WatchURL | null> {
     const search = load(
       await retryPromise(
         () =>

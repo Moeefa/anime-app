@@ -1,4 +1,4 @@
-interface ISearchItem {
+interface SearchItem {
   title: string;
   image: string;
   url: string;
@@ -6,11 +6,11 @@ interface ISearchItem {
   episode?: number;
 }
 
-interface ISearch {
-  items: ISearchItem[];
+interface Search {
+  items: SearchItem[];
   page: number;
   total: number;
   hasNext: boolean;
 }
 
-export type { ISearch, ISearchItem };
+export type { Search, SearchItem };

@@ -448,7 +448,7 @@ checksum = "d38f2da7a0a2c4ccf0065be06397cc26a81f4e528be095826eee9d4adbb8c60f"
 dependencies = [
  "byteorder",
  "fnv",
- "uuid",
+ "uuid 1.8.0",
 ]
 
 [[package]]
@@ -814,6 +814,18 @@ dependencies = [
  "libc",
  "redox_users",
  "winapi",
+]
+
+[[package]]
+name = "discord-rich-presence"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f632a41e3e97febf8edff46b1405f9875894c29e20a25c5abe566872226b3f84"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "uuid 0.8.2",
 ]
 
 [[package]]
@@ -1865,9 +1877,9 @@ dependencies = [
 
 [[package]]
 name = "lazy_static"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "libappindicator"
@@ -1927,25 +1939,6 @@ checksum = "c0ff37bd590ca25063e35af745c343cb7a0271906fb7b37e4813e8f79f00268d"
 dependencies = [
  "bitflags 2.5.0",
  "libc",
-]
-
-[[package]]
-name = "libxdo"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00333b8756a3d28e78def82067a377de7fa61b24909000aeaa2b446a948d14db"
-dependencies = [
- "libxdo-sys",
-]
-
-[[package]]
-name = "libxdo-sys"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db23b9e7e2b7831bbd8aac0bbeeeb7b68cbebc162b227e7052e8e55829a09212"
-dependencies = [
- "libc",
- "x11",
 ]
 
 [[package]]
@@ -2088,7 +2081,6 @@ dependencies = [
  "dpi",
  "gtk",
  "keyboard-types",
- "libxdo",
  "objc",
  "once_cell",
  "png",
@@ -2819,7 +2811,8 @@ dependencies = [
 name = "rabbit-hole"
 version = "2.0.3"
 dependencies = [
- "muda",
+ "discord-rich-presence",
+ "lazy_static",
  "serde",
  "serde_json",
  "tauri",
@@ -2830,7 +2823,6 @@ dependencies = [
  "tauri-plugin-process",
  "tauri-plugin-shell",
  "tauri-plugin-store",
- "window-vibrancy",
 ]
 
 [[package]]
@@ -3804,7 +3796,7 @@ dependencies = [
  "thiserror",
  "time",
  "url",
- "uuid",
+ "uuid 1.8.0",
  "walkdir",
 ]
 
@@ -3873,7 +3865,7 @@ dependencies = [
  "tauri-plugin",
  "thiserror",
  "url",
- "uuid",
+ "uuid 1.8.0",
 ]
 
 [[package]]
@@ -4489,6 +4481,15 @@ name = "utf-8"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "09cc8ee72d2a9becf2f2febe0205bbed8fc6615b7cb429ad062dc7b7ddd036a9"
+
+[[package]]
+name = "uuid"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
+dependencies = [
+ "getrandom 0.2.15",
+]
 
 [[package]]
 name = "uuid"

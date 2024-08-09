@@ -1,30 +1,30 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { ISearch } from "@/types/search";
 import { ProviderContext } from "@/contexts/provider-context";
-import { useLocation } from "react-router-dom";
-import { IAnime } from "@/types/anime";
-import { IGetWatchURL } from "@/types/watch";
+import { Data } from "@/types/data";
+import { Search } from "@/types/search";
+import { WatchURL } from "@/types/watch";
 import { listen } from "@tauri-apps/api/event";
+import { useLocation } from "react-router-dom";
 
 interface DataContextProps {
-  popular: ISearch | null;
-  search: ISearch | null;
-  anime: IAnime | null;
-  sources: IGetWatchURL | null;
+  popular: Search | null;
+  search: Search | null;
+  data: Data | null;
+  sources: WatchURL | null;
   latest: {
-    animes: ISearch | null;
-    episodes: ISearch | null;
+    releases: Search | null;
+    episodes: Search | null;
   };
 }
 
 const DEFAULT_DATA: DataContextProps = {
   popular: null,
   search: null,
-  anime: null,
+  data: null,
   sources: null,
   latest: {
-    animes: null,
+    releases: null,
     episodes: null,
   },
 };
@@ -45,20 +45,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       if (status !== "online") return;
 
       const popular = await provider.popular();
-      const animes = await provider.latestAnimes();
+      const releases = await provider.latestReleases();
       const episodes = await provider.latestEpisodes();
       const search = await provider.search(params.get("q") || "");
       const sources = await provider.getWatchURL(params.get("url") || "");
-      const anime = await provider.anime(
+      const data = await provider.getData(
         (params.has("origin") ? params.get("origin") : params.get("url")) || "",
       );
 
       setData({
         popular,
         search,
-        anime,
+        data,
         sources,
-        latest: { animes, episodes },
+        latest: { releases, episodes },
       });
     });
   }
@@ -74,10 +74,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
     (async () => {
       const popular = await provider.popular();
-      const animes = await provider.latestAnimes();
+      const releases = await provider.latestReleases();
       const episodes = await provider.latestEpisodes();
 
-      setData((prev) => ({ ...prev, popular, latest: { animes, episodes } }));
+      setData((prev) => ({ ...prev, popular, latest: { releases, episodes } }));
     })();
   }, [provider, status]);
 
@@ -94,17 +94,17 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [provider, status, params.get("q")]);
 
   useEffect(() => {
-    setData((prev) => ({ ...prev, anime: null, sources: null }));
+    setData((prev) => ({ ...prev, data: null, sources: null }));
 
     if (status !== "online") return;
 
     (async () => {
-      const anime = await provider.anime(
+      const data = await provider.getData(
         (params.has("origin") ? params.get("origin") : params.get("url")) || "",
       );
       const sources = await provider.getWatchURL(params.get("url") || "");
 
-      setData((prev) => ({ ...prev, anime, sources }));
+      setData((prev) => ({ ...prev, data, sources }));
     })();
   }, [provider, status, params.get("url"), params.get("origin")]);
 

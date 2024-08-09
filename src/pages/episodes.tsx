@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
 import React, { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,29 +9,29 @@ export default function Episodes(): React.ReactElement {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
-  const { anime } = useContext(DataContext);
+  const { data } = useContext(DataContext);
 
   return (
     <>
       <div>
-        {anime ? (
+        {data ? (
           <div className="flex gap-6">
             <div className="w-52 space-y-4">
               <img
                 className="rounded-md aspect-[9/12.8] object-cover w-52"
-                src={anime?.image}
-                alt={anime?.title}
+                src={data?.image}
+                alt={data?.title}
               />
               <div>
                 <ScrollArea className="w-full max-h-48 rounded-md border mb-6 overflow-auto">
                   <div className="p-4 h-full">
-                    {anime && anime.seasons?.length === 0 ? (
+                    {data && data.seasons?.length === 0 ? (
                       <div className="flex justify-center items-center h-full">
                         <p>There's nothing here! 😓</p>
                       </div>
                     ) : (
-                      anime &&
-                      anime.seasons?.map((season, i) => (
+                      data &&
+                      data.seasons?.map((season, i) => (
                         <div key={i}>
                           <h4 className="mb-4 text-sm font-medium leading-none">
                             {season.title}
@@ -58,10 +58,10 @@ export default function Episodes(): React.ReactElement {
             </div>
             <div className="flex-1">
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                {anime?.title}
+                {data?.title}
               </h3>
               <small className="text-sm leading-none py-6">
-                {anime?.description}
+                {data?.description}
               </small>
             </div>
           </div>
